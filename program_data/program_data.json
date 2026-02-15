@@ -1,0 +1,179 @@
+{
+  "groups": [
+    {
+      "name": "brown boxes",
+      "location": {
+        "x": 15,
+        "y": 20,
+        "z": 3
+      },
+      "boxes": [
+        0
+      ],
+      "id": "1"
+    },
+    {
+      "name": "white boxes",
+      "location": {
+        "x": 20,
+        "y": -5,
+        "z": 3
+      },
+      "boxes": [
+        2,
+        null
+      ],
+      "id": "2"
+    }
+  ],
+  "instructions": [
+    {
+      "params": {},
+      "type": "initial"
+    },
+    {
+      "params": {
+        "time": 1000
+      },
+      "type": "wait"
+    },
+    {
+      "params": {},
+      "type": "ungrip"
+    },
+    {
+      "params": {
+        "time": 1000
+      },
+      "type": "wait"
+    },
+    {
+      "params": {
+        "group_id": "2"
+      },
+      "type": "go_group_location"
+    },
+    {
+      "params": {
+        "time": 1000
+      },
+      "type": "wait"
+    },
+    {
+      "params": {},
+      "type": "initial"
+    },
+    {
+      "params": {
+        "time": 1000
+      },
+      "type": "wait"
+    },
+    {
+      "params": {},
+      "type": "grip"
+    },
+    {
+      "params": {
+        "time": 1000
+      },
+      "type": "wait"
+    },
+    {
+      "params": {
+        "group_id": "2"
+      },
+      "type": "go_group_box"
+    },
+    {
+      "params": {
+        "time": 1000
+      },
+      "type": "wait"
+    },
+    {
+      "params": {},
+      "type": "initial"
+    },
+    {
+      "params": {
+        "time": 2000
+      },
+      "type": "wait"
+    },
+    {
+      "params": {},
+      "type": "ungrip"
+    },
+    {
+      "params": {
+        "time": 1000
+      },
+      "type": "wait"
+    },
+    {
+      "params": {
+        "group_id": "1"
+      },
+      "type": "go_group_location"
+    },
+    {
+      "params": {
+        "time": 1000
+      },
+      "type": "wait"
+    },
+    {
+      "params": {},
+      "type": "initial"
+    },
+    {
+      "params": {
+        "time": 1000
+      },
+      "type": "wait"
+    },
+    {
+      "params": {},
+      "type": "grip"
+    },
+    {
+      "params": {
+        "time": 1000
+      },
+      "type": "wait"
+    },
+    {
+      "params": {
+        "group_id": "1"
+      },
+      "type": "go_group_box"
+    },
+    {
+      "params": {
+        "time": 1000
+      },
+      "type": "wait"
+    },
+    {
+      "params": {},
+      "type": "ungrip"
+    },
+    {
+      "params": {
+        "time": 1000
+      },
+      "type": "wait"
+    },
+    {
+      "params": {},
+      "type": "grip"
+    },
+    {
+      "params": {
+        "time": 1000
+      },
+      "type": "wait"
+    }
+  ]
+}

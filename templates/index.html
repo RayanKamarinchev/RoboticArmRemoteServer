@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Program Builder</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Program Builder</h1>
+        </div>
+
+        <div class="main-content">
+            <!-- Groups Panel -->
+            <div class="left-panel">
+                <div class="section-title">Groups</div>
+                <div class="groups-list" id="groupsList">
+                    <div class="empty-state">No groups created yet</div>
+                </div>
+                <button class="btn btn-primary" onclick="openGroupModal()">Add Group</button>
+            </div>
+
+            <div class="center-panel">
+                <!-- Instructions List -->
+                <div class="instructions-panel">
+                    <div class="section-title">Instruction Sequence</div>
+                    <div class="instruction-list" id="instructionList">
+                        <div class="empty-state">Drag instructions here to build your program</div>
+                    </div>
+                </div>
+
+                <!-- Available Instructions -->
+                <div class="available-panel">
+                    <div class="section-title">Available Instructions</div>
+                    <div class="available-instructions" id="availableInstructions">
+                        <div class="available-instruction" draggable="true" data-type="wait">
+                            <div class="available-instruction-name">wait</div>
+                            <div class="available-instruction-desc">Pause for time</div>
+                        </div>
+                        <div class="available-instruction" draggable="true" data-type="initial">
+                            <div class="available-instruction-name">initial</div>
+                            <div class="available-instruction-desc">Go to start position</div>
+                        </div>
+                        <div class="available-instruction" draggable="true" data-type="grip">
+                            <div class="available-instruction-name">grip</div>
+                            <div class="available-instruction-desc">Close gripper</div>
+                        </div>
+                        <div class="available-instruction" draggable="true" data-type="ungrip">
+                            <div class="available-instruction-name">ungrip</div>
+                            <div class="available-instruction-desc">Open gripper</div>
+                        </div>
+                        <div class="available-instruction" draggable="true" data-type="go_box">
+                            <div class="available-instruction-name">go_box</div>
+                            <div class="available-instruction-desc">Move to box</div>
+                        </div>
+                        <div class="available-instruction" draggable="true" data-type="go_group_box">
+                            <div class="available-instruction-name">go_group_box</div>
+                            <div class="available-instruction-desc">Move to group</div>
+                        </div>
+                        <div class="available-instruction" draggable="true" data-type="go_nearest_box">
+                            <div class="available-instruction-name">go_nearest_box</div>
+                            <div class="available-instruction-desc">Move to nearest box</div>
+                        </div>
+                        <div class="available-instruction" draggable="true" data-type="go_pos">
+                            <div class="available-instruction-name">go_pos</div>
+                            <div class="available-instruction-desc">Move to position</div>
+                        </div>
+                        <div class="available-instruction" draggable="true" data-type="go_group_location">
+                            <div class="available-instruction-name">go_group_location</div>
+                            <div class="available-instruction-desc">Move to group location</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Camera and Detected Boxes Panel -->
+            <div class="right-panel">
+                <div class="camera-section">
+                    <div class="section-title">Camera Feed</div>
+                    <div class="image-display" id="cameraImage">
+                        <div class="no-image">No image available</div>
+                    </div>
+                </div>
+
+                <div class="boxes-section">
+                    <div class="section-title">Detected Boxes</div>
+                    <div class="detected-boxes-list" id="detectedBoxesList">
+                        <div class="empty-state">No boxes detected</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Group Modal -->
+    <div class="modal" id="groupModal">
+        <div class="modal-content">
+            <div class="modal-header" id="groupModalTitle">Add Group</div>
+            <div class="form-group">
+                <label class="form-label">Group Name</label>
+                <input type="text" class="form-input" id="groupName" placeholder="Enter group name">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Location (x, y, z)</label>
+                <div class="coord-inputs">
+                    <input type="number" class="form-input" id="groupX" placeholder="X" step="0.1">
+                    <input type="number" class="form-input" id="groupY" placeholder="Y" step="0.1">
+                    <input type="number" class="form-input" id="groupZ" placeholder="Z" step="0.1">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Box IDs</label>
+                <input type="text" class="form-input" id="groupBoxInput" placeholder="Enter box ID and press Enter">
+                <div class="box-tags" id="groupBoxTags"></div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-primary" onclick="saveGroup()">Save</button>
+                <button class="btn" onclick="closeGroupModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Instruction Parameter Modal -->
+    <div class="modal" id="paramModal">
+        <div class="modal-content">
+            <div class="modal-header" id="paramModalTitle">Set Parameters</div>
+            <div id="paramForm"></div>
+            <div class="modal-actions">
+                <button class="btn btn-primary" onclick="saveInstructionParams()">Save</button>
+                <button class="btn" onclick="closeParamModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
