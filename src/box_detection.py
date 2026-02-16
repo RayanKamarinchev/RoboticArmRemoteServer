@@ -38,23 +38,28 @@ def rescale_masks(masks, img_shape):
         new_masks.append(mask)
     return new_masks
 
-def get_polygons_from_masks(masks, epsilon=0.012):
+def get_polygons_from_masks(masks):
     polygons = []
     
     for mask in masks:
         contours, _ = cv2.findContours(
             mask,
             cv2.RETR_EXTERNAL,
-            cv2.CHAIN_APPROX_NONE
+            cv2.CHAIN_APPROX_SIMPLE
         )
 
         contour = max(contours, key=cv2.contourArea)
 
-        eps = epsilon * cv2.arcLength(contour, True)
-        polygon = cv2.approxPolyDP(contour, eps, True)
-        polygon = polygon.squeeze()
-
-        polygons.append(polygon)
+        contour = cv2.convexHull(contour)
+        polygon = []
+        
+        for factor in np.linspace(0.01, 0.1, 20):
+            eps = factor * cv2.arcLength(contour, True)
+            polygon = cv2.approxPolyDP(contour, eps, True)
+            if len(polygon) == 4:
+                break
+        
+        polygons.append(polygon.squeeze())
 
     return polygons
 
@@ -69,7 +74,7 @@ def draw_masks_and_polygons(img, masks, polygons):
     for polygon in polygons:
         cv2.polylines(overlay, [polygon.astype(np.int32)], True, (0,255,0), 2)
 
-    cv2.imwrite("result.png", overlay)
+    # cv2.imwrite("result.png", overlay)
     return overlay
 
 def detect_box_codes(img, boxes):
@@ -80,7 +85,7 @@ def detect_box_codes(img, boxes):
 
     for box in boxes:
         x1, y1, x2, y2 = map(int, box[:4])
-        cv2.imwrite("qr.jpg", img[y1:y2, x1:x2])
+        # cv2.imwrite("qr.jpg", img[y1:y2, x1:x2])
         
         corners, ids, _ = detector.detectMarkers(img[y1:y2, x1:x2])
         if ids is None or len(ids) == 0:
@@ -212,11 +217,11 @@ def get_box_coordinates(img, camera_position, R, camera_matrix, dist_coeffs, rve
     masks = rescale_masks(masks, img.shape)
     new_masks = []
     for mask in masks:
-        mask = clean_mask(mask, kernel_size=25)
+        mask = clean_mask(mask, kernel_size=7)
         new_masks.append(mask)
         
 
-    polygons = get_polygons_from_masks(new_masks, epsilon=0.017)
+    polygons = get_polygons_from_masks(new_masks)
     overlay = draw_masks_and_polygons(img, new_masks, polygons)
     
     boxes = result.boxes.data.cpu().numpy()
@@ -233,13 +238,14 @@ def get_box_coordinates(img, camera_position, R, camera_matrix, dist_coeffs, rve
         
         for (x, y) in top_side_points:
             cv2.circle(overlay, (int(x), int(y)), 5, (0, 255, 0), -1)
-        cv2.imwrite("result.png", overlay)
+        # cv2.imwrite("result.png", overlay)
         box_code_info = boxes_codes_info[i]
         print(box_code_info)
         if box_code_info is None:
             continue
         
         cuboid_height = get_height_from_box_code(box_code_info["corners"], new_camera_matrix, dist_coeffs, camera_position, R)
+        # cuboid_height = 0.05
         print("Cuboid height:", cuboid_height)
         print("Box id:", box_code_info["id"])
 
