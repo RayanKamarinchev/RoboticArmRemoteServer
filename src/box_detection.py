@@ -38,6 +38,17 @@ def rescale_masks(masks, img_shape):
         new_masks.append(mask)
     return new_masks
 
+def clean_mask(mask, kernel_size=3):
+    mask = (mask > 0).astype(np.uint8) * 255
+    
+    kernel = np.ones((kernel_size, kernel_size), np.uint8)
+    
+    mask_clean = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
+    
+    mask_clean = cv2.morphologyEx(mask_clean, cv2.MORPH_CLOSE, kernel)
+    
+    return mask_clean
+
 def get_polygons_from_masks(masks):
     polygons = []
     
@@ -133,17 +144,6 @@ def get_world_rays_from_img_points(points, camera_matrix, R):
 
     rays = np.array(rays)
     return rays
-
-def clean_mask(mask, kernel_size=3):
-    mask = (mask > 0).astype(np.uint8) * 255
-    
-    kernel = np.ones((kernel_size, kernel_size), np.uint8)
-    
-    mask_clean = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
-    
-    mask_clean = cv2.morphologyEx(mask_clean, cv2.MORPH_CLOSE, kernel)
-    
-    return mask_clean
 
 def get_cuboid_info(top_side_world_points):
     print("Top side world points:", top_side_world_points)
@@ -244,7 +244,7 @@ def get_box_coordinates(img, camera_position, R, camera_matrix, dist_coeffs, rve
         if box_code_info is None:
             continue
         
-        cuboid_height = get_height_from_box_code(box_code_info["corners"], new_camera_matrix, dist_coeffs, camera_position, R)
+        cuboid_height = get_height_from_box_code(box_code_info["corners"], new_camera_matrix, None, camera_position, R)
         # cuboid_height = 0.05
         print("Cuboid height:", cuboid_height)
         print("Box id:", box_code_info["id"])
